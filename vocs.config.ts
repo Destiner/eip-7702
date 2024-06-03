@@ -18,12 +18,6 @@ export default defineConfig({
       link: "https://eips.ethereum.org/EIPS/eip-7702",
     },
   ],
-  socials: [
-    {
-      icon: "github",
-      link: "https://github.com/Destiner/eip-7702",
-    },
-  ],
   sidebar: [
     {
       text: "Overview",
