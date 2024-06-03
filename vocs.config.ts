@@ -23,7 +23,7 @@ export default defineConfig({
   sidebar: [
     {
       text: "Overview",
-      link: "/overview",
+      link: "/",
     },
     {
       text: "Reference",
