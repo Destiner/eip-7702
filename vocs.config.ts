@@ -8,6 +8,10 @@ export default defineConfig({
       dark: "#ffab00",
     },
   },
+  editLink: {
+    pattern: "https://github.com/Destiner/eip-7702/edit/main/docs/pages/:path",
+    text: "Edit on GitHub",
+  },
   topNav: [
     {
       text: "EIP",
