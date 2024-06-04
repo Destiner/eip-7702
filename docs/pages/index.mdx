@@ -5,3 +5,17 @@ EIP-7702 gives superpowers to EOAs.
 Specifically, it allows any EOA to "borrow" the code of any contract for a single transaction. To do so, an EOA owner would sign an _authorization_ that could then be submitted by anyone as part of the new transaction type. The owner can revoke an authorization by bumping an account nonce, or they can make an authorization that is valid in perpetuity. The authorization could be given for a single chain, or all chains at once.
 
 This setup allows an EOA to mimic a smart contract account, particularly allowing transaction bundling, gas sponsorships, and custom ownership schemes.
+
+## Motivation
+
+### Flexible
+
+EIP-7702 offers some guardrails yet it is very flexible. Users can provide both cross-chain and perpetual authorizations, as well as choose what proxy to use. While most wallets would probably not allow the most flexible behavior, it still opens up a way for different software vendors to experiment and innovate.
+
+### Compatible with EIP-4337
+
+It is easy to use EIP-7702 with EIP-4337, so most of the infrastructure (e.g. paymasters, bundlers, RPC endpoints) would just work.
+
+### Compatible with existing smart accounts
+
+As EIP-7702 allows an EOA to set its code directly and supports writing to storage, it should be possible with little to no effort to use existing smart account implementations.
