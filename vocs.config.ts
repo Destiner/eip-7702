@@ -5,6 +5,7 @@ export default defineConfig({
   theme: {
     accentColor: "#ffab00",
   },
+  ogImageUrl: "https://eip7702.io/assets/card.png",
   editLink: {
     pattern: "https://github.com/Destiner/eip-7702/edit/main/docs/pages/:path",
     text: "Edit on GitHub",
