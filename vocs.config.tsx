@@ -7,6 +7,7 @@ window.metrical = {
 
 export default defineConfig({
   title: "EIP-7702",
+  description: "Set EOA account code for one transaction",
   theme: {
     accentColor: "#ffab00",
   },
