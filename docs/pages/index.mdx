@@ -19,3 +19,34 @@ It is easy to use EIP-7702 with EIP-4337, so most of the infrastructure (e.g. pa
 ### Compatible with existing smart accounts
 
 As EIP-7702 allows an EOA to set its code directly and supports writing to storage, it should be possible with little to no effort to use existing smart account implementations.
+
+## Specification
+
+The EIP introduces a new transaction, “set code transaction”, where the `TransactionType` is `0x04` and the `TransactionPayload` is the RLP serialization of the following:
+
+```
+rlp([chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit, destination, value, data, access_list, authorization_list, signature_y_parity, signature_r, signature_s])
+
+authorization_list = [[chain_id, address, [nonce], y_parity, r, s], ...]
+```
+
+The `authorization_list` is a list of tuples that store the address to code which the signer desires to set in their EOA temporarily. The third element is a list item mimicking an optional value. When the list length is zero, consider the authorization nonce to be null. When the list length is one, consider the single integer value to be the provided nonce authorization. Other lengths and value types in this optional are invalid.
+
+The `ReceiptPayload` for this transaction is `rlp([status, cumulative_transaction_gas_used, logs_bloom, logs])`.
+
+### Behavior
+
+At the start of executing the transaction, for each `[chain_id, address, [nonce], y_parity, r, s]` tuple:
+
+1. `authority = ecrecover(keccak(0x05 || rlp([chain_id, [nonce], address])), y_parity, r, s]`
+2. Verify the chain id is either 0 or the chain’s current ID.
+3. Verify that the code of `authority` is empty.
+4. If nonce list item is length one, verify the nonce of `authority` is equal to `nonce`.
+5. Set the code of `authority` to code associated with `address`.
+6. Add the `authority` account to `accessed_addresses`
+
+If any of the above steps fail, immediately stop processing that tuple and continue to the next tuple in the list. It will In the case of multiple tuples for the same authority, set the code specified by the address in the first occurrence.
+
+At the end of the transaction, set the code of each `authority` back to empty.
+
+Note that the signer of an authorization tuple may be different than `tx.origin` of the transaction.
