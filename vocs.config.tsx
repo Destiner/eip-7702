@@ -1,5 +1,10 @@
 import { defineConfig } from "vocs";
 
+const scriptContent = `
+window.metrical = {
+  "app": "sTsmB_tjp"
+}`;
+
 export default defineConfig({
   title: "EIP-7702",
   theme: {
@@ -34,4 +39,16 @@ export default defineConfig({
       link: "/ecosystem",
     },
   ],
+  head: () => {
+    return (
+      <>
+        <script dangerouslySetInnerHTML={{ __html: scriptContent }} />
+        <script
+          async
+          src="https://cdn.metrical.xyz/script.js"
+          type="text/javascript"
+        ></script>
+      </>
+    );
+  },
 });
