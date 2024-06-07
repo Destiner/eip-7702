@@ -3,10 +3,7 @@ import { defineConfig } from "vocs";
 export default defineConfig({
   title: "EIP-7702",
   theme: {
-    accentColor: {
-      light: "#664400",
-      dark: "#ffab00",
-    },
+    accentColor: "#ffab00",
   },
   editLink: {
     pattern: "https://github.com/Destiner/eip-7702/edit/main/docs/pages/:path",
