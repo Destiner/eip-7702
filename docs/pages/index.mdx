@@ -36,7 +36,7 @@ The `ReceiptPayload` for this transaction is `rlp([status, cumulative_transactio
 
 ### Behavior
 
-At the start of executing the transaction, for each [chain_id, address, nonce, y_parity, r, s] tuple:
+At the start of executing the transaction, for each `[chain_id, address, nonce, y_parity, r, s]` tuple:
 
 1. `authority = ecrecover(keccak(MAGIC || rlp([chain_id, address, nonce])), y_parity, r, s]`
 2. Verify the chain id is either 0 or the chain’s current ID.
