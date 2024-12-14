@@ -6,9 +6,11 @@
 
 ```ts twoslash [example.ts]
 import { walletClient } from './client'
+
+const ACCOUNT_IMPLEMENTATION_ADDRESS = '0x…';
  
 const authorization = await walletClient.signAuthorization({
-  contractAddress: '0x…',
+  contractAddress: ACCOUNT_IMPLEMENTATION_ADDRESS,
 })
 
 const hash = await walletClient.sendTransaction({
@@ -40,10 +42,14 @@ Set code to a ZeroDev Kernel V3 implementation and initialize the smart account 
 :::code-group
 
 ```ts twoslash [example.ts]
-import { encodeFunctionData } from 'viem'
+import { concat, encodeFunctionData } from 'viem'
 
 import kernelV3Abi from './abi'
 import { walletClient } from './client'
+
+const ZERODEV_KERNEL_V3_IMPLEMENTATION_ADDRESS = '0x…'
+const ZERODEV_ECDSA_VALIDATOR_ADDRESS = '0x…'
+const ROOT_VALIDATOR_ID = concat(['0x01', ZERODEV_ECDSA_VALIDATOR_ADDRESS])
  
 const authorization = await walletClient.signAuthorization({
   contractAddress: ZERODEV_KERNEL_V3_IMPLEMENTATION_ADDRESS,
@@ -125,6 +131,8 @@ export const walletClient = createWalletClient({
 
 Signs and sends a paymaster-sponsored UserOp using the ERC-4337 flow. Assumes the account is already initialized, and the EOA is the owner of the account.
 
+Note that the process is exactly the same as when using a regular smart account. To minimize code surface, you can use a convenience library like [permissionless.js](https://github.com/pimlicolabs/permissionless.js).
+
 :::code-group
 
 ```ts twoslash [example.ts]
@@ -135,10 +143,6 @@ import { mainnet } from 'viem/chains'
 
 import kernelV3ImplementationAbi from './abi'
 import { publicClient, walletClient, bundlerClient, paymasterClient } from './clients'
-
-const callGasLimit = 1000000n;
-const verificationGasLimit = 2000000n;
-const preVerificationGas = 100000n;
 
 const executions = [
   {
@@ -193,6 +197,20 @@ const nonce = await readContract(publicClient, {
 
 const { maxFeePerGas, maxPriorityFeePerGas } =
   await publicClient.estimateFeesPerGas();
+
+const userOperationGasResult = await bundlerClient.estimateUserOperationGas({
+    entryPointAddress: entryPoint07Address,
+    callData,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    nonce,
+    sender: ownerAddress,
+    signature: stubSignature,
+  });
+
+const callGasLimit = userOperationGasResult.callGasLimit;
+const verificationGasLimit = userOperationGasResult.verificationGasLimit;
+const preVerificationGas = userOperationGasResult.preVerificationGas;
 
 const { paymasterPostOpGasLimit, paymasterVerificationGasLimit } =
   await paymasterClient.getPaymasterStubData({
