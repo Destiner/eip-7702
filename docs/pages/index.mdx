@@ -30,7 +30,9 @@ rlp([chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit, dest
 authorization_list = [[chain_id, address, nonce, y_parity, r, s], ...]
 ```
 
-The `authorization_list` is a list of tuples that store the address to code which the signer desires to execute in the context of their EOA.
+The fields `chain_id`, `nonce`, `max_priority_fee_per_gas`, `max_fee_per_gas`, `gas_limit`, `destination`, `value`, `data`, and `access_list` of the outer transaction follow the same semantics as EIP-4844. *Note, this means a null destination is not valid*.
+
+The `authorization_list` is a list of tuples that store the address to code which the signer desires to execute in the context of their EOA. The transaction is considered invalid if the length of `authorization_list` is zero.
 
 The `ReceiptPayload` for this transaction is `rlp([status, cumulative_transaction_gas_used, logs_bloom, logs])`.
 
@@ -40,7 +42,7 @@ At the start of executing the transaction, for each `[chain_id, address, nonce, 
 
 1. Verify the chain id is either 0 or the chain’s current ID.
 2. Verify the `nonce` is less than `2**64 - 1`.
-3. `authority = ecrecover(keccak(0x05 || rlp([chain_id, address, nonce])), y_parity, r, s]`
+3. `authority = ecrecover(keccak(0x05 || rlp([chain_id, address, nonce])), y_parity, r, s)`
   * `s` value must be less or equal than `secp256k1n/2`, as specified in EIP-2.
 4. Add `authority` to `accessed_addresses` (as defined in EIP-2929.)
 5. Verify the code of `authority` is either empty or already delegated.
