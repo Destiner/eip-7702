@@ -2,6 +2,8 @@
 
 ## Basic authorization
 
+This will set the EOA code to the [`Simple7702Account`](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/accounts/Simple7702Account.sol) implementation.
+
 :::code-group
 
 ```ts twoslash [example.ts]
@@ -49,7 +51,7 @@ export const walletClient = createWalletClient({
 
 ## Transaction batching
 
-Once the EOA code is delegated to a smart account implementation, you can start using batched transactions.
+Once the EOA code is delegated to a smart account implementation, you can start making batched transactions.
 
 :::code-group
 
@@ -480,6 +482,8 @@ export default abi;
 ## Sending a user operation
 
 Signs and sends a UserOp using the ERC-4337 flow. Assumes the account is already initialized, and the EOA is the owner of the account.
+
+This way, you can also sponsor the transactions by using a paymaster.
 
 Note that the process is exactly the same as when using a regular smart account. To minimize the code surface, you can use a convenience library like [permissionless.js](https://github.com/pimlicolabs/permissionless.js).
 
