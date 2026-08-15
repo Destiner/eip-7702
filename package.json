@@ -8,11 +8,12 @@
     "preview": "vocs preview"
   },
   "dependencies": {
-    "@types/react": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "typescript": "latest",
-    "vocs": "latest"
+    "@types/react": "^19.2.18",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "^5.9.3",
+    "vocs": "^2.8.5",
+    "waku": "1.0.0-beta.6"
   },
   "devDependencies": {
     "prettier": "^3.3.0",
