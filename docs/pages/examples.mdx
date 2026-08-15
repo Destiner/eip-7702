@@ -490,6 +490,9 @@ Note that the process is exactly the same as when using a regular smart account.
 :::code-group
 
 ```ts twoslash [example.ts]
+// @noErrors
+// Vocs only resolves code-group imports one level deep, so `abi.ts` (imported
+// by `account.ts`, not by this file) is missing from the checked snippet.
 import { zeroAddress } from "viem";
 
 import { smartAccount } from "./account.js";
