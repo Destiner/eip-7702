@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vocs dev",
     "build": "vocs build",
-    "preview": "vocs preview"
+    "build:cloudflare": "BUILD_TARGET=cloudflare vocs build",
+    "preview": "vocs preview",
+    "smoke:cloudflare": "node scripts/smoke-cloudflare.mjs"
   },
   "dependencies": {
     "@types/react": "^19.2.18",

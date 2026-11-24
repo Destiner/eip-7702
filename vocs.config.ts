@@ -6,6 +6,9 @@ export default defineConfig({
   accentColor: "#ffab00",
   // Pages live in docs/pages rather than the default src/pages.
   srcDir: "docs",
+  ...(process.env.BUILD_TARGET === "cloudflare" && {
+    renderStrategy: "full-static",
+  }),
   // Twoslash renders viem's JSDoc into hover tooltips, and that JSDoc contains
   // links relative to viem.sh which resolve as dead here. Warn rather than fail.
   checkDeadlinks: "warn",

@@ -21,6 +21,24 @@ bun run build
 bun run preview
 ```
 
+## Cloudflare deployment
+
+`bun run build:cloudflare` uses Vocs full-static rendering. The Worker serves
+only `dist/public`, which contains the HTML and Waku React Server Component
+payloads used by client-side navigation. The default build is unchanged.
+
+```sh
+bun install --frozen-lockfile
+bun run build:cloudflare
+npx wrangler@4.167.0 dev
+# In another terminal:
+bun run smoke:cloudflare
+```
+
+Pushes to `main` upload and promote a commit-tagged Worker version, then smoke-test
+it on `workers.dev`. CI uses a Worker-scoped token, so changes to production route
+bindings are applied separately with `npx wrangler@4.167.0 triggers deploy`.
+
 ## Contributing
 
 Corrections and additions are welcome, particularly to the
