@@ -43,4 +43,12 @@ jobs:
           wrangler versions upload --tag "$tag" --message "$GITHUB_SHA"
           wrangler versions deploy --version-tag "$tag" --percentage 100 --yes --message "$GITHUB_SHA"
       - name: Smoke-test the deployment
-        run: bun run smoke:cloudflare https://eip-7702.destiner.workers.dev
+        run: |
+          # Edge locations can briefly serve mixed asset versions after promotion.
+          for delay in 0 5 10 20 30; do
+            sleep "$delay"
+            if bun run smoke:cloudflare https://eip-7702.destiner.workers.dev; then
+              exit 0
+            fi
+          done
+          exit 1

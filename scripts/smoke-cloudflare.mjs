@@ -38,6 +38,15 @@ for (const [path, title, rsc] of routes) {
   ).text();
   assert.match(data, /^\w+:I\[/, `React Flight data for ${path}`);
   assert.ok(data.includes(title), `React Flight content for ${path}`);
+
+  const markdown = await (
+    await request(
+      `${path === "/" ? "/index" : path}.md`,
+      200,
+      /^text\/markdown\b/,
+    )
+  ).text();
+  assert.ok(markdown.includes(title), `Markdown content for ${path}`);
 }
 
 for (const ext of [".js", ".css"]) {

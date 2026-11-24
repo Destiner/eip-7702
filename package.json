@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vocs dev",
     "build": "vocs build",
-    "build:cloudflare": "BUILD_TARGET=cloudflare vocs build",
+    "build:cloudflare": "BUILD_TARGET=cloudflare vocs build && cp dist/public/assets/md/*.md dist/public/",
     "preview": "vocs preview",
     "smoke:cloudflare": "node scripts/smoke-cloudflare.mjs"
   },
