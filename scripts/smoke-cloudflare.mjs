@@ -8,9 +8,18 @@ const routes = [
   ["/ecosystem", "Ecosystem", "ecosystem"],
 ];
 
-async function request(path, status, contentType) {
+const browser = {
+  "User-Agent":
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36",
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+};
+const markdownAccept = { Accept: "text/markdown" };
+const curl = { "User-Agent": "curl/8.7.1", Accept: "*/*" };
+
+async function request(path, status, contentType, headers) {
   const response = await fetch(new URL(path, base), {
     redirect: "manual",
+    headers,
     signal: AbortSignal.timeout(15_000),
   });
   assert.equal(response.status, status, path);
@@ -18,9 +27,20 @@ async function request(path, status, contentType) {
   return response;
 }
 
+async function negotiated(path, type, headers) {
+  const response = await request(path, 200, type, headers);
+  const vary = (response.headers.get("vary") ?? "")
+    .toLowerCase()
+    .split(",")
+    .map((name) => name.trim());
+  assert.ok(vary.includes("accept"), `Vary: Accept for ${path}`);
+  assert.ok(vary.includes("user-agent"), `Vary: User-Agent for ${path}`);
+  return response.text();
+}
+
 const assets = new Set();
 for (const [path, title, rsc] of routes) {
-  const html = await (await request(path, 200, /^text\/html\b/)).text();
+  const html = await negotiated(path, /^text\/html\b/, browser);
   assert.match(html, new RegExp(`<h1[^>]*>${title}</h1>`), path);
   assert.match(
     html,
@@ -34,7 +54,7 @@ for (const [path, title, rsc] of routes) {
   }
 
   const data = await (
-    await request(`/RSC/R/${rsc}.txt`, 200, /^text\/plain\b/)
+    await request(`/RSC/R/${rsc}.txt`, 200, /^text\/plain\b/, curl)
   ).text();
   assert.match(data, /^\w+:I\[/, `React Flight data for ${path}`);
   assert.ok(data.includes(title), `React Flight content for ${path}`);
@@ -47,6 +67,30 @@ for (const [path, title, rsc] of routes) {
     )
   ).text();
   assert.ok(markdown.includes(title), `Markdown content for ${path}`);
+  assert.equal(
+    await negotiated(path, /^text\/markdown\b/, {
+      ...browser,
+      ...markdownAccept,
+    }),
+    markdown,
+    `Explicit Markdown for ${path}`,
+  );
+  assert.equal(
+    await negotiated(path, /^text\/markdown\b/, curl),
+    markdown,
+    `curl Markdown for ${path}`,
+  );
+  for (const agent of ["Googlebot", "Discordbot"]) {
+    assert.equal(
+      await negotiated(path, /^text\/html\b/, {
+        ...markdownAccept,
+        "User-Agent": agent,
+      }),
+      html,
+      `${agent} HTML for ${path}`,
+    );
+  }
+  assert.equal(await negotiated(path, /^text\/html\b/, browser), html);
 }
 
 for (const ext of [".js", ".css"]) {

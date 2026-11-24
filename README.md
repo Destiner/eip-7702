@@ -25,9 +25,11 @@ bun run preview
 
 `bun run build:cloudflare` uses Vocs full-static rendering. The Worker serves
 only `dist/public`, which contains the HTML and Waku React Server Component
-payloads used by client-side navigation. Append `.md` to a page path (or use
-`/index.md` for the overview) to get Markdown; the static Worker does not negotiate
-Markdown on HTML URLs. The default build is unchanged.
+payloads used by client-side navigation. On the four docs URLs, the Worker uses
+Vocs negotiation rules: browsers, search crawlers and link-preview bots get HTML;
+terminal clients, AI crawlers and requests with `Accept: text/markdown` get
+Markdown, subject to the crawler exceptions. Direct `.md` URLs (including
+`/index.md` for the overview) are still available. The default build is unchanged.
 
 ```sh
 bun install --frozen-lockfile
