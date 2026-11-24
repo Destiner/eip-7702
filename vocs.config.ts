@@ -38,10 +38,4 @@ export default defineConfig({
       link: "/ecosystem",
     },
   ],
-  head: {
-    script: [
-      { textContent: `window.metrical = { "app": "sTsmB_tjp" }` },
-      { src: "https://cdn.metrical.xyz/script.js", async: true },
-    ],
-  },
 });
