@@ -4,6 +4,7 @@
   "compatibility_date": "2026-11-24",
   "workers_dev": true,
   "preview_urls": false,
+  "routes": [{ "pattern": "eip7702.io/*", "zone_name": "eip7702.io" }],
   "assets": {
     "directory": "./dist/public",
     "html_handling": "drop-trailing-slash",
